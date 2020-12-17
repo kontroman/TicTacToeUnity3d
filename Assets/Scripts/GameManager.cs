@@ -6,6 +6,10 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
     public GameBoard gameBoard;
+    public GameObject yourMoveObject;
+
+    public List<Field> _fields;
+
     public enum turn
     {
         firstPlayerTurn,
@@ -42,6 +46,7 @@ public class GameManager : MonoBehaviour
 
     public void RestartGame()
     {
+        currentTurn = turn.secondPlayerTurn;
         this.gameBoard.LeftTop.State = Field.StateOfField.EMPTY;
         this.gameBoard.MiddleTop.State = Field.StateOfField.EMPTY;
         this.gameBoard.RightTop.State = Field.StateOfField.EMPTY;
@@ -129,10 +134,38 @@ public class GameManager : MonoBehaviour
         if (currentTurn == turn.firstPlayerTurn)
         {
             this.currentTurn = turn.secondPlayerTurn;
+            yourMoveObject.SetActive(false);
+            ComputerMove();
         }
         else
         {
             this.currentTurn = turn.firstPlayerTurn;
+            yourMoveObject.SetActive(true);
+        }
+    }
+
+    void ComputerMove()
+    {
+        Shuffle();
+        foreach (Field f in _fields)
+        {
+            if (f.State == Field.StateOfField.EMPTY)
+            {
+                FieldWasClicked(f);
+                f.State = Field.StateOfField.CIRCLE;
+                return;
+            }
+        }
+    }
+    public void Shuffle()
+    {
+        Field tempGO;
+        for (int i = 0; i < _fields.Count; i++)
+        {
+            int rnd = Random.Range(0, _fields.Count);
+            tempGO = _fields[rnd];
+            _fields[rnd] = _fields[i];
+            _fields[i] = tempGO;
         }
     }
 
@@ -143,13 +176,15 @@ public class GameManager : MonoBehaviour
         {
             Debug.Log("somebodyWon");
             string winnerName = currentTurn == turn.firstPlayerTurn ? "First Player" : "Second Player";
-            StatementsManager.Instance.ShowStatement(winnerName + " won", "Restart Game", this.RestartGame);
+            MenuController.won++;
+            //StatementsManager.Instance.ShowStatement(winnerName + " won", "Restart Game", this.RestartGame);
         }
         else if (currentGameReoult == gameResoult.deadHeat)
         {
+            MenuController.lose++;
             Debug.Log("dead-heat");
-            StatementsManager.Instance.ShowStatement("Dead-heat! Nobody won!", "Restart Game", this.RestartGame);
+            //StatementsManager.Instance.ShowStatement("Dead-heat! Nobody won!", "Restart Game", this.RestartGame);
         }
-
+        RestartGame();
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
 public class Field : MonoBehaviour, IPointerClickHandler
@@ -17,7 +18,7 @@ public class Field : MonoBehaviour, IPointerClickHandler
         CROSS = 2
 
     }
-    public UnityEngine.UI.Image FieldRepresentation;
+    public Image FieldRepresentation;
 
     private Sprite crossSprite, circleSprite, emptySprite;
     private StateOfField state;
@@ -40,10 +41,12 @@ public class Field : MonoBehaviour, IPointerClickHandler
 
             case Field.StateOfField.CIRCLE:
                 FieldRepresentation.sprite = this.circleSprite;
+                FieldRepresentation.GetComponent<Image>().color = Color.red;
                 break;
 
             case Field.StateOfField.CROSS:
                 FieldRepresentation.sprite = this.crossSprite;
+                FieldRepresentation.GetComponent<Image>().color = Color.green;
                 break;
         }
     }

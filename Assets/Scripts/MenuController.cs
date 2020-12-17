@@ -7,6 +7,7 @@ using UnityEngine.SceneManagement;
 public class MenuController : MonoBehaviour
 {
     public GameObject MenuContainer;
+    public GameObject GameContainer;
     public GameObject StatisticContainer;
     
     public Text loseText;
@@ -35,18 +36,21 @@ public class MenuController : MonoBehaviour
 
     public void Back()
     {
+        GameContainer.SetActive(false);
         StatisticContainer.SetActive(false);
         MenuContainer.SetActive(true);
     }
 
     public void Play()
     {
-        SceneManager.LoadScene(1);
+        GameContainer.SetActive(true);
+        MenuContainer.SetActive(false);
     }
 
     public void Statistic() {
         StatisticContainer.SetActive(true);
         MenuContainer.SetActive(false);
+        UpdateStatistic();
     }
 
 }
