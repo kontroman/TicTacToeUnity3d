@@ -146,15 +146,28 @@ public class GameManager : MonoBehaviour
 
     void ComputerMove()
     {
-        Shuffle();
+        int index = 0;
+        //List<Field> backup = _fields;
+        //Shuffle();
         foreach (Field f in _fields)
         {
             if (f.State == Field.StateOfField.EMPTY)
             {
-                FieldWasClicked(f);
-                f.State = Field.StateOfField.CIRCLE;
-                return;
+                try
+                {
+                    if (_fields[index - 1].State == Field.StateOfField.CROSS ||
+                        _fields[index + 1].State == Field.StateOfField.CROSS ||
+                        _fields[index - 3].State == Field.StateOfField.CROSS ||
+                        _fields[index + 3].State == Field.StateOfField.CROSS)
+                    {
+                        FieldWasClicked(f);
+                        f.State = Field.StateOfField.CIRCLE;
+                        return;
+                    }
+                }
+                catch { }
             }
+            index++;
         }
     }
     public void Shuffle()
@@ -177,13 +190,11 @@ public class GameManager : MonoBehaviour
             Debug.Log("somebodyWon");
             string winnerName = currentTurn == turn.firstPlayerTurn ? "First Player" : "Second Player";
             MenuController.won++;
-            //StatementsManager.Instance.ShowStatement(winnerName + " won", "Restart Game", this.RestartGame);
         }
         else if (currentGameReoult == gameResoult.deadHeat)
         {
             MenuController.lose++;
             Debug.Log("dead-heat");
-            //StatementsManager.Instance.ShowStatement("Dead-heat! Nobody won!", "Restart Game", this.RestartGame);
         }
         RestartGame();
     }
